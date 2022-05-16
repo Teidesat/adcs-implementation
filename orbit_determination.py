@@ -94,7 +94,7 @@ def orbital_parameters(semimajorAxis: float, eccentricity: float, inclination: f
     semimajorAxisDerivative, eccentricityDerivative, inclinationDerivative, 
     raanDerivative, argOfPeriapsisDerivative, trueAnomalyDerivative)
 
-def orbit_determination() -> tuple(np.array, np.array, float, float, float, float, float, float, float, float):
+def orbit_determination() -> tuple(np.array, np.array, float, float, np.array):
   """
   Determination of the orbit integrating the orbital parameters through time.
 
@@ -103,17 +103,34 @@ def orbit_determination() -> tuple(np.array, np.array, float, float, float, floa
     relativeVelocityVector (np.array): [km/s]
     meanVelocity (float): [km/s]
     atmosphereDensity (float): [kg/m^3]
-    semimajorAxis (float): [km/s]
-    eccentricity (float): [-]
-    inclination (float): [rad/s]
-    raan (float): [rad/s]
-    argOfPeriapsis (float): [rad/s]
-    trueAnomaly (float): [rad/s]
+    keplerianParameters (Dict): {
+      semimajorAxis (float): [km/s]
+      eccentricity (float): [-]
+      inclination (float): [rad/s]
+      raan (float): [rad/s]
+      argOfPeriapsis (float): [rad/s]
+      trueAnomaly (float): [rad/s]
+    }
   """
 
-  timesteps = np.linspace(0, c.SECONDS, c.SECONDS / c.DELTA_TIME)
+  positionVector, relativeVelocityVector, meanVelocity, atmosphereDensity, \
+    semimajorAxis, eccentricity, inclination, raan, argOfPeriapsis, trueAnomaly = \
+    integrate.odeint(orbital_parameters, *c.INITIAL_KEPLERIAN_PARAMETERS, t = c.TIMESTEPS)
+  
+  keplerianParameters = {
+    'semimajorAxis': semimajorAxis,
+    'eccentricity': eccentricity,
+    'inclination': inclination,
+    'raan': raan,
+    'argOfPeriapsis': argOfPeriapsis,
+    'trueAnomaly': trueAnomaly
+  }
 
-  return integrate.odeint(orbital_parameters, *c.INITIAL_KEPLERIAN_PARAMETERS, t = timesteps)
+  return (positionVector, relativeVelocityVector, meanVelocity, atmosphereDensity,
+    keplerianParameters)
+
+
+    
 
   
   

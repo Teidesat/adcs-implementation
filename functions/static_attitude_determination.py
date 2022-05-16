@@ -152,16 +152,16 @@ def static_attitude_determination(sunSensor: np.array, sunSensorAttitude: np.arr
   and magnetometer. Should be as orthogonal to the Sun Sensor as possible.
   
   Arguments:
-    sunSensor: [rad]
-    sunSensorAttitude: [rad]
-    magnetometerAttitude: [rad]
-    magnetometer: [rad]
-    algorithmSelector: [rad] Triad: 1, FMINSLSQP: 2, SVD: 3 (Default), Q_METHOD: 4, QUEST: 5
-    idealAttitudeMatrix: [rad] If not given, the error is not calculated.
+    sunSensor: [-]
+    sunSensorAttitude: [-]
+    magnetometerAttitude: [-]
+    magnetometer: [T]
+    algorithmSelector: Triad: 1, FMINSLSQP: 2, SVD: 3 (Default), Q_METHOD: 4, QUEST: 5
+    idealAttitudeMatrix: [-] If not given, the error is not calculated.
   
   Returns:
-    attitudeMatrix: [rad]
-    error: [rad]
+    attitudeMatrix: [-]
+    error: [-]
   """
 
   ALGORITHM_SWITCH = {

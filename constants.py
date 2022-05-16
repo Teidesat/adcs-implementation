@@ -7,11 +7,14 @@ import math
 
 # Earth/Universal constants
 EARTH_STD_GRAV_PARAMETER = 3.98600433e5                                   # mu_earth: [km^3/s^2]
+EARTH_MASS = 5.9736e24                                                    # m_T: [kg]
 EARTH_RADIUS = 6378.137e3                                                 # r_earth: [m]
 EARTH_ANGULAR_VELOCITY = 7.292115e-5                                      # w_earth: [rad/s]
 EARTH_ANGULAR_VELOCITY_VECTOR = np.array([0, 0, EARTH_ANGULAR_VELOCITY])  # w_earth(vector): [rad/s]
 EARTH_MAGNETIC_INDUCTION = 3e-5                                           # B_earth: [T]
+EARTH_ORBITAL_PERIOD = 31558118.4                                         # T_earth: [s]
 LIGHT_SPEED = 299792458                                                   # c: [m/s]
+UNIVERSAL_GRAV_CONSTANT = 6.674e-11                                       # G: [m^3/kg/s^2] In matlab it was e-17, don't know why.
 
 # Hysteresis loop constants
 VACUUM_PERMITTIVITY = 8.854187817e-12                                     # E_0: [F/m]
@@ -91,6 +94,14 @@ ROD3_MAGNETIC_MOMENT = (ROD3_INDUCTION * ROD3_VOLUME /
 RODS_AMPERAGE = 78e-3                                                     # A_rod: [A]
 RODS_VOLTAGE = 3.3                                                        # V_rod: [V]
 
+## Gyroscope parameters
+GYRO_AXIAL_INERTIA = 1e7                                                  # Ir: [kg*m^2]
+GYRO_RADIAL_INERTIA = 2e7                                                 # Iz: [kg*m^2]
+GYRO_ELASTIC_COEF = 10                                                    # k_gyro: [-]
+GYRO_ANGULAR_VELOCITY = 1.745 * 2                                         # w_gyro: [rad/s]
+GYRO_CONSTANT = 2 * np.sqrt(GYRO_ELASTIC_COEF * GYRO_RADIAL_INERTIA)      # c_gyro: [-]
+OBSERVER_GAINS = -0.5                                                     # alpha   []
+
 # Initial conditions
 INITIAL_ANGULAR_VELOCITY = math.radians(np.array([10, 5, 5]))             # omega_0: [rad/s]
 INITIAL_ATTITUDE_MATRIX = np.random.random((3, 3))                        # A_0: 3x3 matrix [-]
@@ -103,9 +114,16 @@ q0_3 = 1 / (4 * q0_4) * (INITIAL_ATTITUDE_MATRIX[0, 1] - INITIAL_ATTITUDE_MATRIX
 
 INITIAL_ATTITUDE_QUATERNIONS = np.array([q0_1, q0_2, q0_3, q0_4])         # q_0: [q_1, q_2, q_3, q_4]
 
+# Inertia
+INERTIA_X = 0.0022                                                         # I_x [kgm^2]
+INERTIA_Y = 0.0027                                                         # I_y [kgm^2]
+INERTIA_Z = 0.0028                                                         # I_z [kgm^2]
+INERTIA = [INERTIA_X, INERTIA_Y, INERTIA_Z]                                # I_x, I_y, I_z: [kg*m^2]
+
 ## Time of integration
 HOURS = 3                                                                 # hours: [h]
 SECONDS = HOURS * 3600                                                    # T_f: [s]
 INITIAL_TIME = 0                                                          # T_0: [s]
 TIME_SPAN = np.array([INITIAL_TIME, SECONDS])                             # T_span: [T_0, T_f]: [s]
 DELTA_TIME = 0.02                                                         # delta_T: [s]
+TIMESTEPS = np.linspace(0, SECONDS, SECONDS / DELTA_TIME)
