@@ -1,13 +1,13 @@
 import numpy as np
 import constants as c
-from functions.bdot import b_dot
-from functions.magnetic_disturbance import magnetic_disturbance
-from functions.permanent_magnet import permanent_magnet
-from functions.hysteresis_model import hysteresis_model
-from functions.geometry import geometry
-from functions.solar_radiation_pressure import solar_radiation_pressure
-from functions.aerodynamic import aerodynamic
-from functions.albedo import albedo
+from source.external_torques.bdot import b_dot
+from source.external_torques.magnetic_disturbance import magnetic_disturbance
+from source.external_torques.permanent_magnet import permanent_magnet
+from source.external_torques.hysteresis_model import hysteresis_model
+from source.external_torques.geometry import geometry
+from source.external_torques.solar_radiation_pressure import solar_radiation_pressure
+from source.external_torques.aerodynamic import aerodynamic
+from source.external_torques.albedo import albedo
 from typing import Tuple
 
 def external_torques(atmosphereDensity: float, sunVector: np.array, 

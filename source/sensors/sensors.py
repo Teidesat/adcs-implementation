@@ -1,8 +1,8 @@
 import numpy as np
 import constants as c
-from functions.magnetometer import magnetometer
-from functions.sun_sensor import sun_sensor
-from functions.gyro_model import gyro_model
+from source.sensors.magnetometer import magnetometer
+from source.sensors.sun_sensor import sun_sensor
+from source.sensors.gyro_model import gyro_model
 from typing import Tuple
 
 def sensors(positionVector: np.array, attitudeMatrix: np.array, angularVelocity: np.array, 

@@ -1,6 +1,6 @@
 import numpy as np
 import constants as c
-from functions.get_radiation_pressure_force import get_radiation_pressure_force
+from source.get_radiation_pressure_force import get_radiation_pressure_force
 
 ALBEDO_FORCE = 600
 INFRARED_FORCE = 150

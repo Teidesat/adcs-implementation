@@ -1,4 +1,4 @@
-from functions.static_attitude_determination import static_attitude_determination
+from source.attitude_determination.static_attitude_determination import static_attitude_determination
 import constants
 import numpy as np
 

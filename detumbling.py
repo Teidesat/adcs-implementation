@@ -1,16 +1,16 @@
 import numpy as np
 import constants as c
-from dynamics import dynamics
-from functions.velocity_body import velocity_body
-from orbit_determination import orbit_determination
-from kinematics import kinematics
-from functions.reference_attitude import reference_attitude
-from sensors import sensors
-from static_AD import static_AD
-from external_torques import external_torques
-from determination_error import determination_error
-from tracking_error import tracking_error
-from functions.earth_position import earth_position
+from source.dynamics import dynamics
+from source.velocity_body import velocity_body
+from source.orbit_determination import orbit_determination
+from source.kinematics import kinematics
+from source.reference_attitude import reference_attitude
+from source.sensors.sensors import sensors
+from source.attitude_determination.static_AD import static_AD
+from source.external_torques.external_torques import external_torques
+from source.error.determination_error import determination_error
+from source.error.tracking_error import tracking_error
+from source.earth_position import earth_position
 
 def detumbling():
   """

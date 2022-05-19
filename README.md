@@ -14,4 +14,5 @@ repeats the steps until the desired time is reached.
 
 ### TODO
 * Tests will be needed for every function.
-* A better organization of the folders and files.
+* The documentation can be improved, and needs to be checked for theory errors (variables, units, etc).
+* Constants could be imported one by one, according to the needs of each function.

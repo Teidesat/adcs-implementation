@@ -1,9 +1,9 @@
 import numpy as np
 from ambiance import Atmosphere
 import constants as c
-from functions.kep2car import kep2car
-from functions.car2sphere import car2sphere
-from functions.radius_by_latitude import radius_by_latitude
+from source.utils.kep2car import kep2car
+from source.utils.car2sphere import car2sphere
+from source.utils.radius_by_latitude import radius_by_latitude
 from scipy import integrate
 from typing import Tuple
 
