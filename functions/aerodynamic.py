@@ -15,8 +15,8 @@ def aerodynamic(massDisplacement: np.array, faceVectors: np.array, atmosphericDe
   Returns:
     totalAerodynamicForce: [N]
   """
-  totalAerodynamicForce = np.zeros(1, 3)
-  forceVector = np.zeros(3, c.NUMBER_OF_FACES)
+  totalAerodynamicForce = np.zeros((1, 3))
+  forceVector = np.zeros((3, c.NUMBER_OF_FACES))
   relativeVelocity = np.linalg.norm(velocityBody)
   for i in range(c.NUMBER_OF_FACES):
     if np.dot(velocityBody, faceVectors[:, i]) < 0:

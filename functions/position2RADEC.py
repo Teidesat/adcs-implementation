@@ -1,8 +1,8 @@
-import constants
 import numpy as np
 from math import degrees
+from typing import Tuple
 
-def position2RADEC(positionVector: np.array) -> tuple(float, float):
+def position2RADEC(positionVector: np.array) -> Tuple[float, float]:
   """
   Calculates the right ascension (RA) and the declination (DEC) from
   the geocentric equatorial position vector.

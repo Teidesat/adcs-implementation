@@ -43,7 +43,9 @@ MINIMUM_ELLIPSE_DISTANCE = INITIAL_HEIGHT + 6378                          # r_p:
 MAXIMUM_ELLIPSE_DISTANCE = INITIAL_HEIGHT + 6380                          # r_a: [km]
 INITIAL_SEMIMAJOR_AXIS = 0.5 * (MINIMUM_ELLIPSE_DISTANCE + 
 MAXIMUM_ELLIPSE_DISTANCE)                                                 # a_0: [m]
-INITIAL_ECCENTRICITY = 0.0                                                # e_0: [-]
+INITIAL_ECCENTRICITY = (MAXIMUM_ELLIPSE_DISTANCE - 
+  MINIMUM_ELLIPSE_DISTANCE) / (MAXIMUM_ELLIPSE_DISTANCE + 
+  MINIMUM_ELLIPSE_DISTANCE)                                               # e_0: [-]
 MEAN_ANGULAR_MOTION = math.sqrt(EARTH_STD_GRAV_PARAMETER / 
   (INITIAL_SEMIMAJOR_AXIS ** 3))                                          # n_0: [rad/s]
 ORBITAL_PERIOD = 2 * math.pi / MEAN_ANGULAR_MOTION                        # T_0: [s]
@@ -52,9 +54,14 @@ INITIAL_RAAN = math.radians(0.0)                                          # (Rig
 INITIAL_ARGUMENT_OF_PERIAPSIS = math.radians(0.0)                         # omega_0: [rad]
 INITIAL_TRUE_ANOMALY = math.radians(0.0)                                  # theta_0: [rad]
 
-INITIAL_KEPLERIAN_PARAMETERS = np.array([INITIAL_SEMIMAJOR_AXIS,
-INITIAL_ECCENTRICITY, INITIAL_INCLINATION, INITIAL_RAAN,
-INITIAL_ARGUMENT_OF_PERIAPSIS, INITIAL_TRUE_ANOMALY])                     # [a, e, i, OMEGA, omega, theta]: [m, -, rad, rad, rad, rad]
+INITIAL_KEPLERIAN_PARAMETERS = np.array([
+  INITIAL_SEMIMAJOR_AXIS,
+  INITIAL_ECCENTRICITY,
+  INITIAL_INCLINATION,
+  INITIAL_RAAN,
+  INITIAL_ARGUMENT_OF_PERIAPSIS,
+  INITIAL_TRUE_ANOMALY
+])                                                                        # [a, e, i, OMEGA, omega, theta]: [m, -, rad, rad, rad, rad]
 
 ## Magnetometer parameters
 MAGNETOMETER_ACCURACY = math.radians(5.0)                                 # magn_acc: [rad]
@@ -64,7 +71,7 @@ MAGNETIC_DISTURBANCE = np.array([0.0075, 0.0075, 0.0075])                 # [B_x
 ## Magnetorquer parameters
 DETUMBLE_TORQUE = 1e-5                                                    # G_detumble: [Nm]
 PERMA_MAGNET_INDUCTION = 1.28                                             # B_mag: [T]
-MAGNET_DIPOLE_DIRECTION = np.array([0, 0, 1]).T.conj()                     # u_mag: [B_x, B_y, B_z]: [T]
+MAGNET_DIPOLE_DIRECTION = np.array([0, 0, 1]).T.conj()                    # u_mag: [B_x, B_y, B_z]: [T]
 MAGNETIZATION_VECTOR = 0.04 * MAGNET_DIPOLE_DIRECTION                     # M_mag: [B_x, B_y, B_z]: [T]
 MAGNET_VOLUME_ELEMENT = (np.linalg.norm(MAGNETIZATION_VECTOR) /
   (PERMA_MAGNET_INDUCTION * VACUUM_PERMEABILITY))                         # V_mag: [m^3]
@@ -73,7 +80,7 @@ MAGNET_VOLUME_ELEMENT = (np.linalg.norm(MAGNETIZATION_VECTOR) /
 ROD1_INDUCTION = 0.025                                                    # B_rod1: [T]
 ROD1_THICKNESS = 1e-3                                                     # t_rod1: [m]
 ROD1_VOLUME = 2 * np.pi * (ROD1_THICKNESS / 2) ** 2 * SATELLITE_LENGTH    # V_rod1: [m^3]
-ROD1_DIPOLE_DIRECTION = np.array([1, 0, 0]).T.conj()                       # u_rod1: [B_x, B_y, B_z]: [T]
+ROD1_DIPOLE_DIRECTION = np.array([1, 0, 0]).T.conj()                      # u_rod1: [B_x, B_y, B_z]: [T]
 ROD1_MAGNETIC_MOMENT = (ROD1_INDUCTION * ROD1_VOLUME /
   VACUUM_PERMEABILITY * ROD1_DIPOLE_DIRECTION)                            # M_rod1: [B_x, B_y, B_z]: [T]
 
@@ -103,7 +110,7 @@ GYRO_CONSTANT = 2 * np.sqrt(GYRO_ELASTIC_COEF * GYRO_RADIAL_INERTIA)      # c_gy
 OBSERVER_GAINS = -0.5                                                     # alpha   []
 
 # Initial conditions
-INITIAL_ANGULAR_VELOCITY = math.radians(np.array([10, 5, 5]))             # omega_0: [rad/s]
+INITIAL_ANGULAR_VELOCITY = np.radians(np.array([10, 5, 5]))               # omega_0: [rad/s]
 INITIAL_ATTITUDE_MATRIX = np.random.random((3, 3))                        # A_0: 3x3 matrix [-]
 
 ## Satellite Attitude as quaternions
@@ -125,5 +132,5 @@ HOURS = 3                                                                 # hour
 SECONDS = HOURS * 3600                                                    # T_f: [s]
 INITIAL_TIME = 0                                                          # T_0: [s]
 TIME_SPAN = np.array([INITIAL_TIME, SECONDS])                             # T_span: [T_0, T_f]: [s]
-DELTA_TIME = 0.02                                                         # delta_T: [s]
-TIMESTEPS = np.linspace(0, SECONDS, SECONDS / DELTA_TIME)
+DELTA_TIME = 1                                                            # delta_T: [s]
+TIMESTEPS = np.linspace(0, SECONDS, round(SECONDS / DELTA_TIME))

@@ -24,7 +24,7 @@ def hysteresis_model(externalMagneticField: np.array, rodDipoleDirection: np.arr
     elif hearthHyst <= -c.REMANENCE:
       hysteresisLoopSwitch[0] = False
     
-    bHyst = hysteresis_loop() + hearthHyst * c.REMANENCE / c.COERCIVITY
+    bHyst = hysteresis_loop(0) + hearthHyst * c.REMANENCE / c.COERCIVITY
 
     # Add in saturation
     if bHyst > rodInduction:
@@ -38,7 +38,7 @@ def hysteresis_model(externalMagneticField: np.array, rodDipoleDirection: np.arr
     elif hearthHyst <= -c.REMANENCE:
       hysteresisLoopSwitch[1] = False
 
-    bHyst = hysteresis_loop() + hearthHyst * (rodInduction / 2 / c.COERCIVITY)
+    bHyst = hysteresis_loop(1) + hearthHyst * (rodInduction / 2 / c.COERCIVITY)
 
     # Add in saturation
     if bHyst > rodInduction:
@@ -53,7 +53,7 @@ def hysteresis_model(externalMagneticField: np.array, rodDipoleDirection: np.arr
     elif hearthHyst <= -c.REMANENCE:
       hysteresisLoopSwitch[2] = False
     
-    bHyst = hysteresis_loop()
+    bHyst = hysteresis_loop(2)
   
   else:
     raise ValueError("Invalid hysteresis model switch value")

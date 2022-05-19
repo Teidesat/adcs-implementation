@@ -1,7 +1,7 @@
-from turtle import position
 import numpy as np
+from typing import Tuple
 
-def earth_position(positionVector: np.array, attitudeMatrix: np.array) -> tuple(np.array, np.array):
+def earth_position(positionVector: np.array, attitudeMatrix: np.array) -> Tuple[np.array, np.array]:
   """
   Gives the earth position given the position vector and attitude matrix.
   

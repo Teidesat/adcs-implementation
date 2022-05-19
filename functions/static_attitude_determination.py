@@ -1,5 +1,6 @@
 import numpy as np
 import scipy
+from typing import Tuple
 
 TRIAD = 1
 FMINSLSQP = 2
@@ -70,8 +71,12 @@ def svd(sunSensor: np.array, sunSensorAttitude: np.array, magnetometerAttitude: 
     attitudeMatrix: [rad]
   """
   alpha = np.array([0.2, 0.8]).T.conj()
-  beta = (alpha[0] * magnetometer * np.array(magnetometerAttitude).T.conj() + 
-    alpha[1] * sunSensor * np.array(sunSensorAttitude).T.conj())
+  magnetometer = np.reshape(magnetometer, (3,1))
+  magnetometerAttitude = np.reshape(magnetometerAttitude, (3,1))
+  sunSensor = np.reshape(sunSensor, (3,1))
+  sunSensorAttitude = np.reshape(sunSensorAttitude, (3,1))
+  beta = (alpha[0] * np.dot(magnetometer, np.array(magnetometerAttitude).T.conj()) + 
+    alpha[1] * np.dot(sunSensor, np.array(sunSensorAttitude).T.conj()))
   leftSingularMatrix, _, rightSingularMatrix = np.linalg.svd(beta)
 
   originalMatrix = np.array([[1, 0, 0],
@@ -146,7 +151,9 @@ def quest(sunSensor: np.array, sunSensorAttitude: np.array, magnetometerAttitude
                 [2*(g[0]*g[1]-g[2]), 1-g[0]**2+g[1]**2-g[2]**2, 2*(g[1]*g[2]+g[0])],
                 [2*(g[0]*g[2]+g[1]), 2*(g[1]*g[2]-g[0]), 1-g[0]**2-g[1]**2+g[2]**2]])
 
-def static_attitude_determination(sunSensor: np.array, sunSensorAttitude: np.array, magnetometerAttitude: np.array, magnetometer: np.array, algorithmSelector: int = SVD, idealAttitudeMatrix: np.array = None) -> tuple(np.array, float):
+def static_attitude_determination(sunSensor: np.array, sunSensorAttitude: np.array, 
+  magnetometerAttitude: np.array, magnetometer: np.array, algorithmSelector: int = SVD, 
+  idealAttitudeMatrix: np.array = None) -> Tuple[np.array, float]:
   """
   Static attitude determination algorithms. Needs at least two measures: sun sensor
   and magnetometer. Should be as orthogonal to the Sun Sensor as possible.

@@ -1,7 +1,8 @@
 import numpy as np
 import constants as c
+from typing import Tuple
 
-def permanent_magnet(externalMagneticField: np.array) -> tuple(np.array, float):
+def permanent_magnet(externalMagneticField: np.array) -> Tuple[np.array, float]:
   """
   Calculates the permanent magnet force on the spacecraft.
 
@@ -10,8 +11,8 @@ def permanent_magnet(externalMagneticField: np.array) -> tuple(np.array, float):
 
   Returns:
     permanentMagnetForce: [N]
-    error: [degrees]
+    error: [degrees] Out for the moment
   """
   permanentMagnetForce = np.cross(c.MAGNETIZATION_VECTOR, externalMagneticField)
-  error = np.rad2deg(np.arcsin(np.linalg.norm(permanentMagnetForce) / np.linalg.norm(c.MAGNETIC_FORCE) * np.linalg.norm(externalMagneticField)))
-  return permanentMagnetForce, error
+  #error = np.rad2deg(np.arcsin(np.linalg.norm(permanentMagnetForce) / np.linalg.norm(c.MAGNETIZATION_VECTOR) * np.linalg.norm(externalMagneticField)))
+  return permanentMagnetForce

@@ -1,7 +1,8 @@
 import numpy as np
+from typing import Tuple
 
 def reference_attitude(attitudeMatrix: np.array, meanVelocity: float, inclination: float, 
-time: float, angularVelocity: np.array) -> tuple(np.array, np.array, np.array, np.array):
+time: float, angularVelocity: np.array) -> Tuple[np.array, np.array, np.array, np.array]:
   """
   Reference attitude determination.
 

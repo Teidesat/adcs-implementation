@@ -1,6 +1,7 @@
 import numpy as np
+from typing import Tuple
 
-def cart2sph(x: float, y: float, z: float) -> tuple(float, float, float):
+def car2sphere(x: float, y: float, z: float) -> Tuple[float, float, float]:
   """
   Transformation from cartesian coordinates to spherical coordinates
 

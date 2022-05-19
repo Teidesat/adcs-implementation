@@ -1,7 +1,8 @@
 import numpy as np
+from typing import Tuple
 
-def trackingError(externalMagneticField: np.array, velocityBody: np.array, 
-estimatedAttitudeMatrix: np.array, attitudeLN: np.array) -> tuple(np.array, np.array, np.array):
+def tracking_error(externalMagneticField: np.array, velocityBody: np.array, 
+estimatedAttitudeMatrix: np.array, attitudeLN: np.array) -> Tuple[np.array, np.array, np.array]:
   """
   Calculates the tracking error of the spacecraft.
 

@@ -2,7 +2,7 @@ import numpy as np
 from scipy import integrate
 import constants as c
 
-def get_quaternion(angularVelocity: np.array, normalizedQuaternion: np.array, time: float) -> np.array:
+def get_quaternion(normalizedQuaternion: np.array, time: float, angularVelocity: np.array) -> np.array:
   """
   Calculates the derivative of the quaternion of the spacecraft in a given instant.
 
@@ -20,7 +20,7 @@ def get_quaternion(angularVelocity: np.array, normalizedQuaternion: np.array, ti
     [angularVelocity[1], -angularVelocity[0], 0, angularVelocity[2]],
     [-angularVelocity[0], -angularVelocity[1], -angularVelocity[2], 0]])
 
-  return 1/2 * angVelocityQuaternion * normalizedQuaternion
+  return 1/2 * np.dot(angVelocityQuaternion, normalizedQuaternion)
 
 def quaternion_to_attitude(quaternion: np.array) -> np.array:
   """
@@ -44,17 +44,20 @@ def quaternion_to_attitude(quaternion: np.array) -> np.array:
       -quaternion[0]**2 - quaternion[1]**2 + quaternion[2]**2 + quaternion[3]**2]])
 
 
-def kinematics(angularVelocity: np.array) -> np.array:
+def kinematics(angularVelocity: np.array, time: float) -> np.array:
   """
   Integrates the quaternion of the spacecraft through time and returns the attitude matrix.
   Probably needs normalization.
 
   Args:
     angularVelocity: [rad/s]
+    time: [s]
       
   Returns:
     attitudeMatrix: [-]
   """
 
-  integratedQuaternion = integrate.odeint(get_quaternion, [c.INITIAL_ATTITUDE_QUATERNIONS, angularVelocity], c.TIMESTEPS)
+  integratedQuaternion = integrate.odeint(get_quaternion, 
+    y0 = c.INITIAL_ATTITUDE_QUATERNIONS, t = np.array([time, time + c.DELTA_TIME]),
+    args = (angularVelocity,))[1]
   return quaternion_to_attitude(integratedQuaternion)

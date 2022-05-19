@@ -3,9 +3,10 @@ import constants as c
 from functions.magnetometer import magnetometer
 from functions.sun_sensor import sun_sensor
 from functions.gyro_model import gyro_model
+from typing import Tuple
 
 def sensors(positionVector: np.array, attitudeMatrix: np.array, angularVelocity: np.array, 
-time: float) -> tuple(np.array, np.array, np.array, np.array, np.array):
+time: float) -> Tuple[np.array, np.array, np.array, np.array, np.array]:
   """
   Returns the sensor readings for the given state.
   Sensors: the magnetometer, the sun sensor and the gyroscope.
@@ -25,7 +26,7 @@ time: float) -> tuple(np.array, np.array, np.array, np.array, np.array):
   """
   externalMagneticField, magnetometerAttitude = magnetometer(time, positionVector, attitudeMatrix)
   sunVector, sunAttitude = sun_sensor(time, attitudeMatrix)
-  gyroAngularVelocity = gyro_model(angularVelocity)
+  gyroAngularVelocity = gyro_model(time, angularVelocity)
 
   return sunVector, sunAttitude, externalMagneticField, magnetometerAttitude, gyroAngularVelocity
 

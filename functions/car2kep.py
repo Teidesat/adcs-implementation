@@ -1,7 +1,8 @@
 import constants
 import numpy as np
+from typing import Tuple
 
-def car2kep(positionVector: np.array, velocityVector: np.array) -> tuple(float, float, float, float, float, float):
+def car2kep(positionVector: np.array, velocityVector: np.array) -> Tuple[float, float, float, float, float, float]:
   """
   Transformation from cartesian coordinates to Keplerian elements
 

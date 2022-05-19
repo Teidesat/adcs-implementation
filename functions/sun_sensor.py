@@ -21,6 +21,6 @@ def sun_sensor(time: float, attitudeMatrix: np.array) -> np.array:
     np.sin(N * time) * np.cos(np.deg2rad(EPSILON)),
     np.sin(N * time) * np.sin(np.deg2rad(EPSILON))
   ]).T.conj()
-  sunVector = attitudeMatrix * sunAttitude
+  sunVector = np.dot(attitudeMatrix, sunAttitude)
 
   return sunVector, sunAttitude

@@ -1,4 +1,4 @@
-import functions.static_attitude_determination
+from functions.static_attitude_determination import static_attitude_determination
 import constants
 import numpy as np
 
@@ -32,7 +32,7 @@ def realMagneticVector(magneticVector: np.array) -> np.array:
                     [np.sin(constants.MAGNETOMETER_ACCURACY), -np.cos(constants.MAGNETOMETER_ACCURACY)*np.sin(constants.MAGNETOMETER_ACCURACY), np.cos(constants.MAGNETOMETER_ACCURACY)*np.cos(constants.MAGNETOMETER_ACCURACY)]])
   return np.dot(errorMatrix, magneticVector)
 
-def staticADBlock(sunVector: np.array, sunSensorAttitude: np.array, magneticVector: np.array, magnetometerAttitude: np.array) -> np.array:
+def static_AD(sunVector: np.array, sunSensorAttitude: np.array, magneticVector: np.array, magnetometerAttitude: np.array) -> np.array:
   """
   Calculates the attitude by using the sun sensor and magentometer data.
   
@@ -48,4 +48,4 @@ def staticADBlock(sunVector: np.array, sunSensorAttitude: np.array, magneticVect
   sunSensor = realSunVector(sunVector)
   magnetometer = realMagneticVector(magneticVector)
 
-  return functions.static_attitude_determination(sunSensor, sunSensorAttitude, magnetometerAttitude, magnetometer)
+  return static_attitude_determination(sunSensor, sunSensorAttitude, magnetometerAttitude, magnetometer)

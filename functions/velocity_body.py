@@ -11,4 +11,6 @@ def velocity_body(relativeVelocityVector: np.array, attitudeMatrixError: np.arra
   Returns:
     velocityBody: [m/s]
 """
-  return relativeVelocityVector.T.conj() / attitudeMatrixError * 1000
+  # Same as matlab's velocityBody = relativeVelocityVector'/(attitudeMatrixError)*1000:
+  velocityBody = np.dot(relativeVelocityVector.T.conj(), np.linalg.pinv(attitudeMatrixError)) * 1000
+  return velocityBody

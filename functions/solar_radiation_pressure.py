@@ -1,6 +1,6 @@
 import numpy as np
 import constants as c
-import functions.get_radiation_pressure_force as get_radiation_pressure_force
+from functions.get_radiation_pressure_force import get_radiation_pressure_force
 
 SOLAR_CONSTANT = 1358
 SOLAR_RADIATION_PRESSURE = SOLAR_CONSTANT / c.LIGHT_SPEED

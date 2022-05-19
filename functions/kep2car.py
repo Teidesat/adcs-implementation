@@ -1,7 +1,9 @@
 import constants
 import numpy as np
+from typing import Tuple
 
-def kep2car(semimajorAxis: float, eccentricity: float, inclination: float, raan: float, argOfPeriapsis: float, trueAnomaly: float) -> tuple(np.array, np.array):
+def kep2car(semimajorAxis: float, eccentricity: float, inclination: float, raan: float, 
+  argOfPeriapsis: float, trueAnomaly: float) -> Tuple[np.array, np.array]:
   """
   Transformation from Keplerian elements to cartesian coordinates
 

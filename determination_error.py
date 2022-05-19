@@ -1,6 +1,7 @@
 import numpy as np
+from typing import Tuple
 
-def determinationError(attitudeMatrix: np.array, estimatedAttitudeMatrix: np.array, attitudeLN: np.array) -> tuple(float, float):
+def determination_error(attitudeMatrix: np.array, estimatedAttitudeMatrix: np.array, attitudeLN: np.array) -> Tuple[float, float]:
   """
   Calculates the error of the attitude determination.
 

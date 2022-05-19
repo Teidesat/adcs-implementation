@@ -29,6 +29,6 @@ def magnetometer(time: float, positionVector: np.array, attitudeMatrix: np.array
   positionDirection = positionVector / position
   magnetometerAttitude = (c.EARTH_RADIUS * 1000)**3 * h0 / position**3 *(3 * np.cross(magneticFieldVector, 
     positionDirection) * positionDirection - magneticFieldVector)
-  externalMagneticField = attitudeMatrix * magnetometerAttitude
+  externalMagneticField = np.dot(attitudeMatrix, magnetometerAttitude)
 
   return externalMagneticField, magnetometerAttitude

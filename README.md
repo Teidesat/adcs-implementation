@@ -11,4 +11,7 @@ The simulations are currently being refactored and will be updated soon. Some th
 * Functions with integration might not work as intended. Probably, it could be 
 changed so that each function is integrated only with 1 step, and then the simulation 
 repeats the steps until the desired time is reached. 
-* Some tests are needed for every function.
+
+### TODO
+* Tests will be needed for every function.
+* A better organization of the folders and files.

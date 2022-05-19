@@ -2,19 +2,20 @@ from ast import Return
 import numpy as np
 import constants as c
 from scipy import integrate
+from typing import Tuple
 
-def gyro_dynamics(stateVector: np.array, angularVelocity: np.array, time: float) -> tuple(np.array, np.array):
+def gyro_dynamics(stateVector: np.array, time: float, angularVelocity: np.array) -> Tuple[np.array, np.array]:
   """
-  Defining the dynamics for the Gyro STIM 202 MODEL in a given instant
+  Calculates the derivative of the state vector for the gyro model, defining
+  the gyroscope dynamics as 1st order differential ecuations.
 
   Args:
     stateVector:            x
-    angularVelocity:        w
     time:                   t
+    angularVelocity:        w
   
   Returns:
     stateVectorDerivative:  x_dot
-    feedbackTorque:         M
   """
 
   # Gyro dynamics expressed as 1st order ODE
@@ -30,16 +31,9 @@ def gyro_dynamics(stateVector: np.array, angularVelocity: np.array, time: float)
       stateVector[2] - (c.GYRO_AXIAL_INERTIA / c.GYRO_RADIAL_INERTIA) * c.GYRO_ANGULAR_VELOCITY * angularVelocity[2]
   ]).T.conj()
 
-  # Feedback torque applied to the gyros
-  feedbackTorque = np.array([
-    - c.GYRO_ELASTIC_COEF * stateVector[0] - c.GYRO_CONSTANT * stateVector[3],    # M_x
-    - c.GYRO_ELASTIC_COEF * stateVector[1] - c.GYRO_CONSTANT * stateVector[4],    # M_y
-    - c.GYRO_ELASTIC_COEF * stateVector[2] - c.GYRO_CONSTANT * stateVector[5]     # M_z
-  ]).T.conj()
+  return stateVectorDerivative
 
-  return stateVectorDerivative, feedbackTorque
-
-def filter(filteredAngularVelocity: np.array, estimatedAngularVelocity: np.array, time: float) -> np.array:
+def filter(filteredAngularVelocity: np.array, time: float, estimatedAngularVelocity: np.array) -> np.array:
   """
   Defining the filter as a Linear Observer with euler equations.
 
@@ -66,17 +60,26 @@ def filter(filteredAngularVelocity: np.array, estimatedAngularVelocity: np.array
       c.OBSERVER_GAINS * (filteredAngularVelocity[2] - estimatedAngularVelocity[2]) / c.INERTIA_Z
   ])
 
-def gyro_model(angularVelocity: np.array) -> np.array:
+def gyro_model(time: float, angularVelocity: np.array) -> np.array:
   """
   Defining the model for the Gyro STIM 202
 
   Args:
-    angularVelocity:        w
+    time:[s]                 t
+    angularVelocity: [rad/s] w
 
   Returns:
     gyroAngularVelocity:    w_gyro
   """
-  _, feedbackTorque = integrate.odeint(gyro_dynamics, [np.zeros(6).T.conj(), angularVelocity], t = c.TIMESTEPS)
+  stateVector = integrate.odeint(gyro_dynamics, y0 = np.zeros(6).T.conj(), t = np.array([time, time + c.DELTA_TIME]),
+    args = (angularVelocity,))[0]
+
+  # Feedback torque applied to the gyros
+  feedbackTorque = np.array([
+    - c.GYRO_ELASTIC_COEF * stateVector[0] - c.GYRO_CONSTANT * stateVector[3],    # M_x
+    - c.GYRO_ELASTIC_COEF * stateVector[1] - c.GYRO_CONSTANT * stateVector[4],    # M_y
+    - c.GYRO_ELASTIC_COEF * stateVector[2] - c.GYRO_CONSTANT * stateVector[5]     # M_z
+  ]).T.conj()
 
   # Recover angular velocity of spacecraft
   estimatedAngularVelocity = np.array([
@@ -86,4 +89,5 @@ def gyro_model(angularVelocity: np.array) -> np.array:
   ])
 
   # Filter the angular velocity
-  return integrate.odeint(filter, [c.INITIAL_ANGULAR_VELOCITY, estimatedAngularVelocity], t = c.TIMESTEPS)
+  return integrate.odeint(filter, y0 = c.INITIAL_ANGULAR_VELOCITY, t = np.array([time, time + c.DELTA_TIME]), 
+    args = (estimatedAngularVelocity,))[0]
