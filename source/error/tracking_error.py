@@ -18,7 +18,7 @@ estimatedAttitudeMatrix: np.array, attitudeLN: np.array) -> Tuple[np.array, np.a
     polePointingError: [deg]
   """
   attitudeBL = estimatedAttitudeMatrix * attitudeLN.T.conj()
-  xAxis = attitudeBL * np.array([1, 0, 0]).T.conj()
+  xAxis = np.dot(attitudeBL, np.array([1, 0, 0]).T.conj())
 
   nadirPointingError = np.rad2deg(np.arccos(np.dot(np.array([-1, 0, 0]), xAxis) / np.linalg.norm(xAxis)))
   polePointingError = np.rad2deg(np.arccos(np.dot(np.array([0, 0, 1]), externalMagneticField) / np.linalg.norm(externalMagneticField)))

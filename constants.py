@@ -129,7 +129,7 @@ INERTIA = [INERTIA_X, INERTIA_Y, INERTIA_Z]                                # I_x
 
 ## Time of integration
 HOURS = 3                                                                 # hours: [h]
-SECONDS = HOURS * 3600                                                    # T_f: [s]
+SECONDS = 10                                                    # T_f: [s]
 INITIAL_TIME = 0                                                          # T_0: [s]
 TIME_SPAN = np.array([INITIAL_TIME, SECONDS])                             # T_span: [T_0, T_f]: [s]
 DELTA_TIME = 1                                                            # delta_T: [s]
