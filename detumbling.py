@@ -23,6 +23,7 @@ def detumbling():
   angularVelocity = c.INITIAL_ANGULAR_VELOCITY
   time = c.INITIAL_TIME
   previousExternalMagneticField = np.zeros((3,))
+  currentKeplerianParameters = c.INITIAL_KEPLERIAN_PARAMETERS
 
   # Defining variables for plotting
   disturbancesPlot = np.empty((0,3))
@@ -40,7 +41,9 @@ def detumbling():
     print('SIMULATING DETUMBLING:\t{0}/{1} seconds\r'.format(time, c.SECONDS), end="")
 
     positionVector, relativeVelocityVector, meanVelocity, atmosphereDensity, \
-      keplerianParameters = orbit_determination(time)
+      keplerianParameters = orbit_determination(currentKeplerianParameters, time)
+    
+    currentKeplerianParameters = keplerianParameters
     
     attitudeMatrix = kinematics(angularVelocity, time)
 

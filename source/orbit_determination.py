@@ -1,16 +1,18 @@
 import numpy as np
-from ambiance import Atmosphere
 import constants as c
+from pyatmos import expo
 from source.utils.kep2car import kep2car
 from source.utils.car2sphere import car2sphere
 from source.utils.radius_by_latitude import radius_by_latitude
 from scipy import integrate
 from typing import Tuple
 
-def orbital_parameters(keplerianParameters: np.array, time: float) -> \
+def orbital_parameters(keplerianParameters: np.array) -> \
   np.array([float, float, float, float, float, float]):
   """
   Determination of the orbital parameters from Keplerian elements in a given instant.
+  These include the variables that are later needed for the derivation and for the
+  output of the Orbit Determination Block.
 
   Args:
     keplerianParameters (np.array): {
@@ -21,17 +23,18 @@ def orbital_parameters(keplerianParameters: np.array, time: float) -> \
       argOfPeriapsis: [rad]
       trueAnomaly: [rad]
     }
-    time: [s]
   
   Returns:
-    keplerianParametersDerivatives (np.array): {
-      semimajorAxisDerivative: [km/s]
-      eccentricityDerivative: [-]
-      inclinationDerivative: [rad/s]
-      raanDerivative: [rad/s]
-      argOfPeriapsisDerivative: [rad/s]
-      trueAnomalyDerivative: [rad/s]
-    }
+    perturbationAcceleration
+    orbitRadius
+    velocity
+    argOfLatitude
+    specificAngularMomentum
+    positionVector
+    relativeVelocityVector
+    meanVelocity
+    atmosphereDensity
+
   """
   # Keplerian parameters
   semimajorAxis = keplerianParameters[0]
@@ -64,8 +67,8 @@ def orbital_parameters(keplerianParameters: np.array, time: float) -> \
 
   elevation = car2sphere(positionVector[0], positionVector[1], positionVector[2])[1]
   radius = radius_by_latitude(c.EARTH_RADIUS, c.EARTH_OBLATENESS, elevation)
-  altitude = c.EARTH_RADIUS - radius
-  atmosphereDensity = Atmosphere(altitude).density
+  altitude = orbitRadius - radius
+  atmosphereDensity = expo(altitude).rho[0]
   
   dragAcceleration = (-(1/2) * (c.SATELLITE_A_M_RATIO / 1e6) * 
     c.DRAG_COEFFICIENT * (atmosphereDensity * 1e9) * relativeVelocity) * relativeVelocityVector
@@ -74,10 +77,32 @@ def orbital_parameters(keplerianParameters: np.array, time: float) -> \
   tangentialVelocity = velocityVector / np.linalg.norm(velocityVector)
   azimuthalVelocity = (np.cross(positionVector, velocityVector) / 
     np.linalg.norm(np.cross(positionVector, velocityVector)))
-  nadirVelocity = np.cross(tangentialVelocity, azimuthalVelocity)
+  nadirVelocity = np.cross(azimuthalVelocity, tangentialVelocity)
   rotationMatrix = np.array([tangentialVelocity, nadirVelocity, azimuthalVelocity])
 
   perturbationAcceleration = np.dot(rotationMatrix.T.conj(), perturbationAcceleration)
+  
+  return (perturbationAcceleration, orbitRadius, velocity, argOfLatitude, 
+    specificAngularMomentum, positionVector, relativeVelocityVector, meanVelocity, atmosphereDensity)
+
+def keplerianParametersDerivatives(keplerianParameters: np.array, time: float, 
+  perturbationAcceleration: np.array, orbitRadius: float, velocity: float, 
+  argOfLatitude: float, specificAngularMomentum: float) -> np.array:
+  """
+  Calculates the derivative of the Keplerian parameters of a satellite.
+
+  Args:
+    keplerianParameters: Keplerian parameters of the satellite.
+    time: Time since the beginning of the simulation.
+
+  Returns:
+    Derivative of the Keplerian parameters of the satellite.
+  """
+  # Keplerian parameters needed for derivation
+  semimajorAxis = keplerianParameters[0]
+  eccentricity = keplerianParameters[1]
+  inclination = keplerianParameters[2]
+  trueAnomaly = keplerianParameters[5]
 
   # Derivation of the orbital parameters for output
   semimajorAxisDerivative = (2 * semimajorAxis ** 2 * velocity / 
@@ -106,11 +131,13 @@ def orbital_parameters(keplerianParameters: np.array, time: float) -> \
     trueAnomalyDerivative
   ])
 
-def orbit_determination(time: float) -> Tuple[np.array, np.array, float, float, np.array]:
+def orbit_determination(currentKeplerianParameters: np.array, time: float) -> Tuple[np.array, np.array, float, float, np.array]:
   """
   Determination of the orbit integrating the orbital parameters through time.
 
   Args:
+    currentKeplerianParameters: Keplerian parameters. Will use the initial ones 
+      or the ones from the previous time step according to the time variable.
     time: [s] Simultation time.
 
   Returns:
@@ -127,22 +154,14 @@ def orbit_determination(time: float) -> Tuple[np.array, np.array, float, float, 
       trueAnomaly (float): [rad/s]
     }
   """
+  perturbationAcceleration, orbitRadius, velocity, argOfLatitude, specificAngularMomentum, \
+    positionVector, relativeVelocityVector, meanVelocity, atmosphereDensity = \
+    orbital_parameters(currentKeplerianParameters)
 
-
-  keplerianParameters = integrate.odeint(orbital_parameters, 
-    y0 = c.INITIAL_KEPLERIAN_PARAMETERS, t = np.array([time, time + c.DELTA_TIME]))[1]
+  keplerianParameters = integrate.odeint(keplerianParametersDerivatives, 
+    y0 = currentKeplerianParameters, t = np.array([time, time + c.DELTA_TIME]),
+    args = (perturbationAcceleration, orbitRadius, velocity, argOfLatitude, 
+    specificAngularMomentum))[1]
   
-  # Could be optimized by not calculating these parameters again in the next step
-  meanVelocity = np.sqrt(c.EARTH_STD_GRAV_PARAMETER / keplerianParameters[0] ** 3)
-
-  positionVector, velocityVector = kep2car(*keplerianParameters)
-
-  relativeVelocityVector = velocityVector - np.cross(c.EARTH_ANGULAR_VELOCITY_VECTOR, positionVector)
-
-  elevation = car2sphere(positionVector[0], positionVector[1], positionVector[2])[1]
-  radius = radius_by_latitude(c.EARTH_RADIUS, c.EARTH_OBLATENESS, elevation)
-  altitude = c.EARTH_RADIUS - radius
-  atmosphereDensity = Atmosphere(altitude).density
-
   return (positionVector, relativeVelocityVector, meanVelocity, atmosphereDensity,
     keplerianParameters)

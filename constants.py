@@ -8,7 +8,7 @@ import math
 # Earth/Universal constants
 EARTH_STD_GRAV_PARAMETER = 3.98600433e5                                   # mu_earth: [km^3/s^2]
 EARTH_MASS = 5.9736e24                                                    # m_T: [kg]
-EARTH_RADIUS = 6378.137e3                                                 # r_earth: [m]
+EARTH_RADIUS = 6378.137                                                   # r_earth: [km]
 EARTH_ANGULAR_VELOCITY = 7.292115e-5                                      # w_earth: [rad/s]
 EARTH_ANGULAR_VELOCITY_VECTOR = np.array([0, 0, EARTH_ANGULAR_VELOCITY])  # w_earth(vector): [rad/s]
 EARTH_MAGNETIC_INDUCTION = 3e-5                                           # B_earth: [T]
@@ -30,7 +30,8 @@ J2_PERTURBATION = 0.0010826269                                            # J2: 
 # Satellite data
 SATELLITE_MASS = 1.33                                                     # m: [kg]
 SATELLITE_LENGTH = 0.1                                                    # l: [m]
-SATELLITE_MAX_FRONTAL_SECTION = 0.5                                       # A: [m^2]
+SATELLITE_MAX_FRONTAL_SECTION = SATELLITE_LENGTH * (SATELLITE_LENGTH +
+  2 * SATELLITE_LENGTH * np.cos(np.radians(20)))                          # A: [m^2]
 SATELLITE_A_M_RATIO = SATELLITE_MAX_FRONTAL_SECTION / SATELLITE_MASS      # A/m: [m^2/kg]
 DRAG_COEFFICIENT = 2.1                                                    # C_d: [-]
 BALLISTIC_COEFFICIENT = 1 / (DRAG_COEFFICIENT * SATELLITE_A_M_RATIO)      # B: [-]
@@ -128,8 +129,8 @@ INERTIA_Z = 0.0028                                                         # I_z
 INERTIA = [INERTIA_X, INERTIA_Y, INERTIA_Z]                                # I_x, I_y, I_z: [kg*m^2]
 
 ## Time of integration
-HOURS = 3                                                                 # hours: [h]
-SECONDS = 10                                                    # T_f: [s]
+HOURS = 0.5                                                               # hours: [h]
+SECONDS = HOURS * 3600                                                    # T_f: [s]
 INITIAL_TIME = 0                                                          # T_0: [s]
 TIME_SPAN = np.array([INITIAL_TIME, SECONDS])                             # T_span: [T_0, T_f]: [s]
 DELTA_TIME = 1                                                            # delta_T: [s]
