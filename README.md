@@ -8,10 +8,10 @@ This repository contains the simulations of the Attitude Determination and Contr
 
 ## Execution
 To execute the simulations, you need to have the following packages installed:
-* [Numpy] (https://numpy.org/)
-* [Matplotlib] (https://matplotlib.org/)
-* [Scipy] (https://www.scipy.org/)
-* [Pyatmos] (https://pypi.org/project/pyatmos/)
+* [Numpy](https://numpy.org/)
+* [Matplotlib](https://matplotlib.org/)
+* [Scipy](https://www.scipy.org/)
+* [Pyatmos](https://pypi.org/project/pyatmos/)
 
 To run the program, you need to execute the following command:
 ```
